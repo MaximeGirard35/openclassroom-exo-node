@@ -35,9 +35,9 @@ mongoose.connect(mongooseCO,
 
 // GET findOne
 app.get('/api/products/:id', (req, res, next) => {
-  // console.log(req.params);
+  console.log(req.params.id);
   Product.findOne({ _id: req.params.id })
-    .then(product => res.status(200).json(product))
+    .then(product => res.status(200).json({ product: product }))
     .catch(error => res.status(404).json({ error }));
 });
 
@@ -50,6 +50,20 @@ app.post('/api/products', (req, res, next) => {
   product.save()
     .then(product => res.status(201).json({ product }))
     .catch(error => res.status(400).json({ error }));
+});
+
+// PUT
+app.put('/api/products/:id', (req, res, next) => {
+  Product.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Modified!'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
+// DELETE
+app.delete('/api/products/:id', (req, res, next) => {
+  Product.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Deleted!' }))
+    .catch(error => res.status(404).json({ error }));
 });
 
 module.exports = app;
